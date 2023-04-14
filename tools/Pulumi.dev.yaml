@@ -1,0 +1,7 @@
+config:
+  aws:region: us-east-2
+  tools:desiredClusterSize: "3"
+  tools:eksNodeInstanceType: t3.medium
+  tools:maxClusterSize: "6"
+  tools:minClusterSize: "3"
+  tools:vpcNetworkCidr: 10.0.0.0/16

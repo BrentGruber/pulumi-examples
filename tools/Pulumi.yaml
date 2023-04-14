@@ -1,0 +1,6 @@
+name: tools
+runtime:
+  name: python
+  options:
+    virtualenv: venv
+description: Pulumi program to deploy an EKS cluster in AWS intended to host tools
