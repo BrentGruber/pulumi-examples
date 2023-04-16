@@ -1,5 +1,6 @@
 config:
   aws:region: us-east-2
+  pulumi:template: kubernetes-aws-typescript
   tools:desiredClusterSize: "3"
   tools:eksNodeInstanceType: t3.medium
   tools:maxClusterSize: "6"
