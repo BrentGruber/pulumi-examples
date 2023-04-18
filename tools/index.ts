@@ -3,16 +3,26 @@ import * as aws from "@pulumi/aws"
 import * as awsx from "@pulumi/awsx";
 import * as eks from "@pulumi/eks";
 import * as k8s from "@pulumi/kubernetes"
+import * as fs from 'fs';
+
+import { Stack, getStack } from "@pulumi/pulumi/runtime";
 
 // Grab some values from the Pulumi configuration (or use default values)
 const config = new pulumi.Config();
+const environment = config.get("environment") || "dev";
 const minClusterSize = config.getNumber("minClusterSize") || 3;
 const maxClusterSize = config.getNumber("maxClusterSize") || 6;
 const desiredClusterSize = config.getNumber("desiredClusterSize") || 3;
 const eksNodeInstanceType = config.get("eksNodeInstanceType") || "t3.medium";
 const vpcNetworkCidr = config.get("vpcNetworkCidr") || "10.0.0.0/16";
-const domain = config.get("domain") || "bomdemo.com"
-const clusterName = config.get("clusterName") || "bomdemo-tools-eks-cluster"
+const domain = config.get("domain") || "bomdemo.com";
+const clusterName = config.get("clusterName") || "bomdemo-tools-eks-cluster";
+
+// Config for alb load balancer controller
+const albNamespace = config.get("lbcNamespace") || "aws-lb-controller";
+
+// Config for ingress-nginx installation
+const ingressNamespace = config.get("ingressNamespace") || "ingress-nginx";
 
 // Find some existing network information from the account
 const zone = aws.route53.getZone({ name: domain });
@@ -65,9 +75,81 @@ const cluster = new eks.Cluster("bomdemo-tools", {
     // Uncomment the next two lines for a private cluster (VPN access required)
     // endpointPrivateAccess: true,
     // endpointPublicAccess: false
+    createOidcProvider: true,
 });
 
+// create a provider to use for applying k8s
+const provider = new k8s.Provider('k8s', {
+    kubeconfig: cluster.kubeconfig.apply(JSON.stringify),
+});
+
+// Gather oidc details from cluster
+// Typescript complains that oidcProvider may possibly be undefined
+// can't find any docs or issues about it so forcing it to ignore that warning with !
+// Hopefully it's defined ¯\_(ツ)_/¯
+const oidcUrl = cluster.core.oidcProvider!.url;
+const oidcArn = cluster.core.oidcProvider!.arn;
+
+
 // Deploy aws-load-balancer-controller into the cluster
+const serviceAccountName = `aws-lb-controller-serviceaccount`
+const saAssumeRolePolicy = pulumi.all([oidcUrl, oidcArn, albNamespace, serviceAccountName]).apply(([url, arn, namespace, saName]) =>
+    aws.iam.getPolicyDocument({
+        statements: [
+        {
+            actions: ['sts:AssumeRoleWithWebIdentity'],
+            conditions: [
+            {
+                test: 'StringEquals',
+                values: [`system:serviceaccount:${namespace}:${saName}`],
+                variable: `${url.replace('https://', '')}:sub`,
+            },
+            ],
+            effect: 'Allow',
+            principals: [{identifiers: [arn], type: 'Federated'}],
+        },
+        ],
+    })
+);
+// Create a new IAM role that assumes the AssumeRoleWebWebIdentity policy.
+const saRole = new aws.iam.Role(`${pulumi.getStack()}-${environment}-${serviceAccountName}-role`, {
+    assumeRolePolicy: saAssumeRolePolicy.json
+});
+// Create the IAM policy to give load balancer controller to update load balancers and dns
+const iamPolicy = new aws.iam.Policy(`${pulumi.getStack()}-${environment}-${serviceAccountName}-lb-controller`, 
+    // args
+    {
+        policy: fs.readFileSync('files/iam_policy.json', 'utf-8')
+    }, 
+    // opts
+    {
+        parent: saRole
+    }
+)
+
+// attach the policy to the role
+const iamPolicyAttachment = new aws.iam.PolicyAttachment( `${pulumi.getStack()}-${environment}-${serviceAccountName}-lb-controller-attach`,
+    {
+        policyArn: iamPolicy.arn,
+        roles: [saRole.name],
+    },
+    {
+        parent: saRole
+    }
+)
+// create the service account and namespace
+const albNs = new k8s.core.v1.Namespace(albNamespace, { metadata: { name: albNamespace } }, {provider: cluster.provider});
+const albSa = new k8s.core.v1.ServiceAccount("aws-lb-controller-sa", {
+        metadata: {
+            "name": serviceAccountName,
+            "namespace": albNs.metadata["name"],
+            "annotations": {
+                "eks.amazonaws.com/role-arn": saRole.arn.apply(([arn]) => arn)
+            }
+        }
+    },{provider: cluster.provider} ); 
+
+// apply the load balancer controller helm chart
 const albControllerChart = new k8s.helm.v3.Chart("alb-controller-chart", {
     chart: "aws-load-balancer-controller",
     version: "1.5.0",
@@ -76,11 +158,13 @@ const albControllerChart = new k8s.helm.v3.Chart("alb-controller-chart", {
     },
     namespace: "kube-system",
     values: {
+        region: "us-east-2",
         clusterName: cluster.core.cluster.name,
         serviceAccount: {
-            create: true,
-            name: "alb-ingress-controller"
-        }
+            create: false,
+            name: serviceAccountName
+        },
+        vpcId: eksVpc.vpcId
     }
 }, {provider: cluster.provider});
 
@@ -116,11 +200,5 @@ const nginx = new k8s.helm.v3.Chart("ingress-nginx", {
 }, {provider: cluster.provider});
 
 
-
-
-
 // Export the kubeconfig for use
 export const kubeconfig = cluster.kubeconfig;
-
-// Export the ALB controller endpoint
-// export const albControllerEndpoint = albControllerChart.getResourceProperty("v1/Service", "kube-system", "aws-load-balancer-controller", "status").apply(status => "http://${status.loadBalancer.ingress[0].hostname]");
