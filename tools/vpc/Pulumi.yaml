@@ -1,0 +1,3 @@
+name: vpc
+runtime: nodejs
+description: Provisions a vpc with public and private subnets in AWS

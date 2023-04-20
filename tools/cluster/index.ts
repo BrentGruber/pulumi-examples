@@ -144,7 +144,7 @@ const albSa = new k8s.core.v1.ServiceAccount("aws-lb-controller-sa", {
             "name": serviceAccountName,
             "namespace": albNs.metadata["name"],
             "annotations": {
-                "eks.amazonaws.com/role-arn": saRole.arn.apply(([arn]) => arn)
+                "eks.amazonaws.com/role-arn": saRole.arn
             }
         }
     },{provider: cluster.provider} ); 
@@ -156,7 +156,7 @@ const albControllerChart = new k8s.helm.v3.Chart("alb-controller-chart", {
     fetchOpts: {
         repo: "https://aws.github.io/eks-charts"
     },
-    namespace: "kube-system",
+    namespace: albNamespace,
     values: {
         region: "us-east-2",
         clusterName: cluster.core.cluster.name,
