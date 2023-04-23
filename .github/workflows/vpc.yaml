@@ -31,5 +31,5 @@ jobs:
                 whoami
                 ls
                 cd tools/vpc
-                echo $PULUMI_ACCESS_TOKEN
+                printenv
                 /.pulumi/bin/pulumi up -y
