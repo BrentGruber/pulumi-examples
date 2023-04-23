@@ -32,5 +32,5 @@ jobs:
                 cd tools/vpc
                 pwd
                 cat Pulumi.yaml
-                /.pulumi/bin/pulumi stack ls
+                /.pulumi/bin/pulumi stack select BOM-DEMO/vpc/dev
                 /.pulumi/bin/pulumi up -y
