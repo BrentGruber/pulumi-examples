@@ -16,6 +16,11 @@ jobs:
         runs-on: [self-hosted, pulumi]
     
         steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+              with:
+                path: ${{ env.SRC_PREFIX }}
+                
             - name: Pulumi build
               run: |
                 ls
