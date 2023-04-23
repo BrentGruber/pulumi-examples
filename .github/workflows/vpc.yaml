@@ -25,4 +25,4 @@ jobs:
               run: |
                 whoami
                 cd tools/vpc
-                pulumi up -y
+                sudo pulumi up -y
