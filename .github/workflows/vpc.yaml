@@ -29,6 +29,7 @@ jobs:
                 PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
               run: |
                 cd tools/vpc
+                aws sts get-caller-identity
                 aws sts assume-role --role-arn arn:aws:iam::593393184947:role/olufi-role-c30292b --role-session-name olufi-runner
                 /.pulumi/bin/pulumi stack select BOM-DEMO/vpc/dev
                 npm install
