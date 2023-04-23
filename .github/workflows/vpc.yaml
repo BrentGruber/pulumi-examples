@@ -9,7 +9,10 @@ on:
         branches: [main]
         paths:
             - 'tools/vpc/*'
-        
+     
+env:
+    PULUMI_ACCESS_TOKEN: ${{ env.PULUMI_ACCESS_TOKEN }}
+
 jobs:
     build:
         name: Build vpc infrastructure
@@ -21,6 +24,8 @@ jobs:
               with:
                 path: ${{ env.SRC_PREFIX }}
 
+              # It seems that the runner does not load .bashrc, duh
+              # so if we need to use an executable, we need absolute path
             - name: Pulumi build
               run: |
                 whoami
