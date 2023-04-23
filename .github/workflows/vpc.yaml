@@ -30,5 +30,7 @@ jobs:
               run: |
                 pwd
                 cd tools/vpc
+                pwd
+                cat Pulumi.yaml
                 /.pulumi/bin/pulumi stack select dev
                 /.pulumi/bin/pulumi up -y
