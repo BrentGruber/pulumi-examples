@@ -24,5 +24,7 @@ jobs:
             - name: Pulumi build
               run: |
                 whoami
+                ls
                 cd tools/vpc
-                sudo pulumi up -y
+                curl -fsSL https://get.pulumi.com | sh
+                pulumi up -y
