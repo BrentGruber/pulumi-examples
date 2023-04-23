@@ -7,6 +7,9 @@ sudo apt update
 # Install ssm agent
 sudo snap install amazon-ssm-agent --classic
 
+# Install aws cli
+sudo apt install awscli
+
 # Install pulumi
 curl -fsSL https://get.pulumi.com | sh
 echo 'export PATH=/.pulumi/bin:$PATH' >> ~/.bashrc
