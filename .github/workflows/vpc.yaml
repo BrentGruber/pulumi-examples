@@ -26,10 +26,7 @@ jobs:
               # so if we need to use an executable, we need absolute path
             - name: Pulumi build
               env:
-                PULUMI_ACCESS_TOKEN: ${{ env.PULUMI_ACCESS_TOKEN }}
+                PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
               run: |
-                whoami
-                ls
                 cd tools/vpc
-                printenv
                 /.pulumi/bin/pulumi up -y
