@@ -1,5 +1,5 @@
 config:
   aws:region: us-east-2
-  aws:skipMetadataApiCheck: false
+  aws:skipMetadataApiCheck: false  # This is required when running through github actions: https://github.com/pulumi/pulumi-aws/issues/2079
   environment: dev
   vpcNetworkCidr: 10.0.0.0/16

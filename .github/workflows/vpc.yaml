@@ -22,14 +22,20 @@ jobs:
               with:
                 path: ${{ env.SRC_PREFIX }}
 
+              # TODO: make this general for all folders (except olufi)
+            - name: Change Directory
+              run: |
+                cd tools/vpc
+
+            - name: Install Dependencies
+              run: |
+                npm install
+
               # It seems that the runner does not load .bashrc, duh
-              # so if we need to use an executable, we need absolute path
+              # so if we have an executable in a weird path (like pulumi) access via absolute path
             - name: Pulumi build
               env:
                 PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
               run: |
-                cd tools/vpc
-                aws sts get-caller-identity
                 /.pulumi/bin/pulumi stack select BOM-DEMO/vpc/dev
-                npm install
                 /.pulumi/bin/pulumi up -y
