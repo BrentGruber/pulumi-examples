@@ -28,9 +28,7 @@ jobs:
               env:
                 PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
               run: |
-                pwd
                 cd tools/vpc
-                pwd
-                cat Pulumi.yaml
                 /.pulumi/bin/pulumi stack select BOM-DEMO/vpc/dev
+                npm install
                 /.pulumi/bin/pulumi up -y
