@@ -1,0 +1,21 @@
+name: Build vpc infrastructure
+
+on:
+    pull_request:
+        branches: [main]
+        paths:
+            - 'tools/vpc/*'
+    push:
+        branches: [main]
+        paths:
+            - 'tools/vpc/*'
+        
+jobs:
+    build:
+        name: Build vpc infrastructure
+        runs-on: [self-hosted, pulumi]
+    
+        steps:
+            - name: Pulumi build
+              run: |
+                pulumi up -y
