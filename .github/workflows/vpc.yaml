@@ -26,5 +26,4 @@ jobs:
                 whoami
                 ls
                 cd tools/vpc
-                curl -fsSL https://get.pulumi.com | sh
-                pulumi up -y
+                /.pulumi/bin/pulumi up -y
