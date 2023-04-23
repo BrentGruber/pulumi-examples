@@ -18,5 +18,6 @@ jobs:
         steps:
             - name: Pulumi build
               run: |
+                ls
                 cd tools/vpc
                 pulumi up -y
