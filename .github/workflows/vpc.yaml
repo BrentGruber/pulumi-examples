@@ -28,6 +28,7 @@ jobs:
               env:
                 PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
               run: |
+                pwd
                 cd tools/vpc
-                /.pulumi/bin/pulumi stack ls
+                /.pulumi/bin/pulumi stack select dev
                 /.pulumi/bin/pulumi up -y
