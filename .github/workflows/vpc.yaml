@@ -5,10 +5,14 @@ on:
         branches: [main]
         paths:
             - 'tools/vpc/*'
+        paths-ignore:
+            - 'tools/olufi/*'
     push:
         branches: [main]
         paths:
             - 'tools/vpc/*'
+        paths-ignore:
+            - 'tools/olufi/*'
     
 
 jobs:
@@ -22,18 +26,15 @@ jobs:
               with:
                 path: ${{ env.SRC_PREFIX }}
 
-              # TODO: make this general for all folders (except olufi)
-            - name: Change Directory
-              run: |
-                cd tools/vpc
-
             - name: Install Dependencies
+              working-directory: ./tools/vpc
               run: |
                 npm install
 
               # It seems that the runner does not load .bashrc, duh
               # so if we have an executable in a weird path (like pulumi) access via absolute path
             - name: Pulumi build
+              working-directory: ./tools/vpc
               env:
                 PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
               run: |
