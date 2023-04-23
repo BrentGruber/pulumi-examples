@@ -4,11 +4,11 @@ on:
     pull_request:
         branches: [main]
         paths:
-            - 'tools/vpc/*'
+            - 'tools/cluster/*'
     push:
         branches: [main]
         paths:
-            - 'tools/vpc/*'
+            - 'tools/cluster/*'
     
 
 jobs:
@@ -23,16 +23,16 @@ jobs:
                 path: ${{ env.SRC_PREFIX }}
 
             - name: Install Dependencies
-              working-directory: ./tools/vpc
+              working-directory: ./tools/cluster
               run: |
                 npm install
 
               # It seems that the runner does not load .bashrc, duh
               # so if we have an executable in a weird path (like pulumi) access via absolute path
             - name: Pulumi build
-              working-directory: ./tools/vpc
+              working-directory: ./tools/cluster
               env:
                 PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
               run: |
-                /.pulumi/bin/pulumi stack select BOM-DEMO/vpc/dev
+                /.pulumi/bin/pulumi stack select BOM-DEMO/cluster/dev
                 /.pulumi/bin/pulumi up -y

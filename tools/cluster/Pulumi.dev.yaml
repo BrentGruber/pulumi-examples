@@ -1,6 +1,9 @@
 config:
   aws:region: us-east-2
+  aws:skipMetadataApiCheck: false  # This is required when running through github actions: https://github.com/pulumi/pulumi-aws/issues/2079
   pulumi:template: kubernetes-aws-typescript
+  tools:projectName: "bomdemo-tools-eks"
+  tools:clusterName: "bomdemo-tools-eks-cluster-dev"
   tools:desiredClusterSize: "3"
   tools:eksNodeInstanceType: t3.medium
   tools:maxClusterSize: "6"
