@@ -26,7 +26,12 @@ export const argocd = (
             server: {
                 ingress: {
                     enabled: true,
-                    hosts: ["argocd.tools.bomdemo.com"]
+                    hosts: ["argocd.tools.bomdemo.com"],
+                    annotations: {
+                        "kubernetes.io/ingress.class": "nginx",
+                        "nginx.ingress.kubernetes.io/ssl-passthrough": "true",
+                        "nginx.ingress.kubernetes.io/ssl-redirect": "false"
+                    }
                 }
             }
         }
