@@ -20,13 +20,15 @@ export const vpc = (vpcNetworkCidr: string, projectName: string) => {
             {
                 type: awsx.ec2.SubnetType.Public,
                 tags: {
-                    [subnetTag]: "shared"
+                    [subnetTag]: "shared",
+                    "kubernetes.io/role/elb": "1"
                 }
             },
             {
                 type: awsx.ec2.SubnetType.Private,
                 tags: {
-                    [subnetTag]: "shared"
+                    [subnetTag]: "shared",
+                    "kubernetes.io/role/internal-elb": "1"
                 }
             }
         ]

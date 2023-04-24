@@ -8,8 +8,7 @@ import { createNamespace, createServiceAccount } from '../utils';
 
 export const externalDns = (
     clusterOidcProvider: aws.iam.OpenIdConnectProvider,
-    provider: k8s.Provider,
-    zoneId: string
+    provider: k8s.Provider
 ) => {
 
     
@@ -44,6 +43,8 @@ export const externalDns = (
             },
             namespace: externalDnsNamespace.metadata.name,
             values: {
+                provider: "aws",
+                domainFilters: ["bomdemo.com"],
                 serviceAccount: {
                     create: false,
                     name: externalDnsServiceAccount.metadata.name

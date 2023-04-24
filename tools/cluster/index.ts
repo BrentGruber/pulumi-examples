@@ -3,7 +3,10 @@ import * as k8s from "@pulumi/kubernetes";
 import { cluster } from "./infrastructure/cluster";
 import { vpc } from "./infrastructure/vpc";
 import { albController } from "./helm-charts/alb-controller/alb-controller";
+import { argocd } from "./helm-charts/argocd/argocd";
 import { ingress } from "./helm-charts/ingress-nginx/ingress";
+import { externalDns } from "./helm-charts/external-dns/external-dns";
+import { dopplerOperator } from "./helm-charts/doppler-operator/doppler-operator";
 
 
 // Grab some values from the Pulumi configuration (or use default values)
@@ -55,3 +58,20 @@ export const { ingressNamespace, ingressChart } = ingress(
 
 
 // deploy external-dns
+export const { externalDnsNamespace, externalDnsPolicy, externalDnsServiceAccount, externalDnsChart} = externalDns(
+    clusterOidcProvider,
+    provider
+);
+
+
+// deploy doppler-operator
+export const { dopplerOperatorNamespace, dopplerOperatorChart} = dopplerOperator(
+    clusterOidcProvider,
+    provider
+);
+
+// deploy argocd
+export const { argocdNamespace, argocdChart} = argocd(
+    clusterOidcProvider,
+    provider
+);

@@ -67,6 +67,10 @@ export const createServiceAccount = (
 
 // Function to create a namespace
 export const createNamespace = (namespace: string, provider: k8s.Provider) =>
-    new k8s.core.v1.Namespace(namespace, undefined, {
+    new k8s.core.v1.Namespace(namespace, {
+        metadata: {
+            name: namespace
+        }
+    }, {
         provider,
     });

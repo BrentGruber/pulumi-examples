@@ -45,7 +45,7 @@ export const ingress = (
                         "service.beta.kubernetes.io/aws-load-balancer-ssl-ports": "443",
     
                         // External DNS Annotations
-                        "external-dns.alpha.kubernetes.io/hostname": domain
+                        "external-dns.alpha.kubernetes.io/hostname": "*." + domain
                     }
                 }
             }

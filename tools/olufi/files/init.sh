@@ -2,13 +2,17 @@
 #!/bin/bash
 
 sudo apt update
+apt install unzip curl
 
 
 # Install ssm agent
 sudo snap install amazon-ssm-agent --classic
 
+
 # Install aws cli
-sudo apt install awscli
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+./aws/install
 
 # Install pulumi
 curl -fsSL https://get.pulumi.com | sh
