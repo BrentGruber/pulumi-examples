@@ -23,38 +23,37 @@ export const ingress = (
     const ingressNamespace = createNamespace("ingress-nginx", provider);
 
     // apply the helm chart
-    const ingressChart = new k8s.helm.v3.Chart("ingress-nginx", {
-        chart: "ingress-nginx",
-        namespace: "ingress-nginx",
-        version: "4.6.0",
-        fetchOpts: {repo: "https://kubernetes.github.io/ingress-nginx"},
-        values: {
-            controller: {
-                service: {
-                    type: "LoadBalancer",
-                    externalTrafficPolicy: "Local",
-                    annotations: {
-                        // AWS Load Balancer Controller Annotations
-                        "service.beta.kubernetes.io/aws-load-balancer-type": "external",
-                        "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type": "ip",
-                        "service.beta.kubernetes.io/aws-load-balancer-backend-protocol": "http",
-                        "service.beta.kubernetes.io/aws-load-balancer-scheme": "internet-facing",
+    // const ingressChart = new k8s.helm.v3.Chart("ingress-nginx", {
+    //     chart: "ingress-nginx",
+    //     namespace: "ingress-nginx",
+    //     version: "4.6.0",
+    //     fetchOpts: {repo: "https://kubernetes.github.io/ingress-nginx"},
+    //     values: {
+    //         controller: {
+    //             service: {
+    //                 type: "LoadBalancer",
+    //                 externalTrafficPolicy: "Local",
+    //                 annotations: {
+    //                     // AWS Load Balancer Controller Annotations
+    //                     "service.beta.kubernetes.io/aws-load-balancer-type": "external",
+    //                     "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type": "ip",
+    //                     "service.beta.kubernetes.io/aws-load-balancer-backend-protocol": "http",
+    //                     "service.beta.kubernetes.io/aws-load-balancer-scheme": "internet-facing",
                     
-                        // SSL Annotations
-                        "service.beta.kubernetes.io/aws-load-balancer-ssl-cert": cert.arn,
-                        "service.beta.kubernetes.io/aws-load-balancer-ssl-ports": "443",
+    //                     // SSL Annotations
+    //                     "service.beta.kubernetes.io/aws-load-balancer-ssl-cert": cert.arn,
+    //                     "service.beta.kubernetes.io/aws-load-balancer-ssl-ports": "443",
     
-                        // External DNS Annotations
-                        "external-dns.alpha.kubernetes.io/hostname": "*." + domain
-                    }
-                }
-            }
-        }
-    }, {provider: provider});
+    //                     // External DNS Annotations
+    //                     "external-dns.alpha.kubernetes.io/hostname": "*." + domain
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }, {provider: provider});
 
     // return provisioned values
     return {
-        ingressNamespace,
-        ingressChart
+        ingressNamespace
     };
 }

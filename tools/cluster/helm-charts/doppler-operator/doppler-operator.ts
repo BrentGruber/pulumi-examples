@@ -32,16 +32,15 @@ export const dopplerOperator = (
     });
 
     // apply the helm chart
-    const dopplerOperatorChart = new k8s.helm.v3.Chart("doppler-kubernetes-operator", {
-        chart: "doppler-kubernetes-operator",
-        namespace: dopplerOperatorNamespace.metadata.name,
-        version: "1.2.0",
-        fetchOpts: {repo: "https://helm.doppler.com"}
-    }, {provider: provider});
+    // const dopplerOperatorChart = new k8s.helm.v3.Chart("doppler-kubernetes-operator", {
+    //     chart: "doppler-kubernetes-operator",
+    //     namespace: dopplerOperatorNamespace.metadata.name,
+    //     version: "1.2.0",
+    //     fetchOpts: {repo: "https://helm.doppler.com"}
+    // }, {provider: provider});
 
     // return provisioned values
     return {
-        dopplerOperatorNamespace,
-        dopplerOperatorChart
+        dopplerOperatorNamespace
     };
 }

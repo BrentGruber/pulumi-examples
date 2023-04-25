@@ -35,30 +35,29 @@ export const externalDns = (
     );
 
     // apply the helm chart
-    const externalDnsChart = new k8s.helm.v3.Chart("external-dns-chart", {
-            chart: "external-dns",
-            version: "1.12.2",
-            fetchOpts: {
-                repo: "https://kubernetes-sigs.github.io/external-dns/"
-            },
-            namespace: externalDnsNamespace.metadata.name,
-            values: {
-                provider: "aws",
-                domainFilters: ["bomdemo.com"],
-                serviceAccount: {
-                    create: false,
-                    name: externalDnsServiceAccount.metadata.name
-                }
-            }
-        }, {provider: provider}
-    );
+    // const externalDnsChart = new k8s.helm.v3.Chart("external-dns-chart", {
+    //         chart: "external-dns",
+    //         version: "1.12.2",
+    //         fetchOpts: {
+    //             repo: "https://kubernetes-sigs.github.io/external-dns/"
+    //         },
+    //         namespace: externalDnsNamespace.metadata.name,
+    //         values: {
+    //             provider: "aws",
+    //             domainFilters: ["bomdemo.com"],
+    //             serviceAccount: {
+    //                 create: false,
+    //                 name: externalDnsServiceAccount.metadata.name
+    //             }
+    //         }
+    //     }, {provider: provider}
+    // );
 
     //return
     return {
         externalDnsNamespace,
         externalDnsPolicy,
-        externalDnsServiceAccount,
-        externalDnsChart,
+        externalDnsServiceAccount
     }
 
 }

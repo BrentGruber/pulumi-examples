@@ -32,30 +32,30 @@ export const albController = (
     );
 
     // apply the helm chart
-    const albControllerChart = new k8s.helm.v3.Chart("alb-controller-chart", {
-            chart: "aws-load-balancer-controller",
-            version: "1.5.0",
-            fetchOpts: {
-                repo: "https://aws.github.io/eks-charts"
-            },
-            namespace: albControllerNamespace.metadata.name,
-            values: {
-                region: "us-east-2",
-                clusterName: clusterName,
-                serviceAccount: {
-                    create: false,
-                    name: albControllerServiceAccount.metadata.name
-                },
-                vpcId: vpcId
-            }
-        }, {provider: provider}
-    );
+    // const albControllerChart = new k8s.helm.v3.Chart("alb-controller-chart", {
+    //         chart: "aws-load-balancer-controller",
+    //         version: "1.5.0",
+    //         fetchOpts: {
+    //             repo: "https://aws.github.io/eks-charts"
+    //         },
+    //         namespace: albControllerNamespace.metadata.name,
+    //         values: {
+    //             region: "us-east-2",
+    //             clusterName: clusterName,
+    //             keepTLSSecret: true,
+    //             serviceAccount: {
+    //                 create: false,
+    //                 name: albControllerServiceAccount.metadata.name
+    //             },
+    //             vpcId: vpcId
+    //         }
+    //     }, {provider: provider}
+    // );
 
     // return provisioned values
     return {
         albControllerNamespace,
         albControllerPolicy,
-        albControllerServiceAccount,
-        albControllerChart
+        albControllerServiceAccount
     };
 }

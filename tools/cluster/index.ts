@@ -3,7 +3,6 @@ import * as k8s from "@pulumi/kubernetes";
 import { cluster } from "./infrastructure/cluster";
 import { vpc } from "./infrastructure/vpc";
 import { albController } from "./helm-charts/alb-controller/alb-controller";
-import { argocd } from "./helm-charts/argocd/argocd";
 import { ingress } from "./helm-charts/ingress-nginx/ingress";
 import { externalDns } from "./helm-charts/external-dns/external-dns";
 import { dopplerOperator } from "./helm-charts/doppler-operator/doppler-operator";
@@ -42,7 +41,7 @@ const provider = new k8s.Provider('k8s', {
 
 
 // deploy the alb controller chart
-export const { albControllerNamespace, albControllerPolicy, albControllerServiceAccount, albControllerChart} = albController(
+export const { albControllerNamespace, albControllerPolicy, albControllerServiceAccount } = albController(
     clusterOidcProvider,
     provider,
     projectName,
@@ -50,7 +49,7 @@ export const { albControllerNamespace, albControllerPolicy, albControllerService
 );
 
 // deploy nginx-ingress
-export const { ingressNamespace, ingressChart } = ingress(
+export const { ingressNamespace } = ingress(
     clusterOidcProvider,
     provider,
     domain
@@ -58,20 +57,14 @@ export const { ingressNamespace, ingressChart } = ingress(
 
 
 // deploy external-dns
-export const { externalDnsNamespace, externalDnsPolicy, externalDnsServiceAccount, externalDnsChart} = externalDns(
+export const { externalDnsNamespace, externalDnsPolicy, externalDnsServiceAccount } = externalDns(
     clusterOidcProvider,
     provider
 );
 
 
 // deploy doppler-operator
-export const { dopplerOperatorNamespace, dopplerOperatorChart} = dopplerOperator(
-    clusterOidcProvider,
-    provider
-);
-
-// deploy argocd
-export const { argocdNamespace, argocdChart} = argocd(
+export const { dopplerOperatorNamespace } = dopplerOperator(
     clusterOidcProvider,
     provider
 );
