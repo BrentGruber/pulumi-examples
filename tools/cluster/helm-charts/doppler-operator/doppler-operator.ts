@@ -1,9 +1,6 @@
-import * as pulumi from '@pulumi/pulumi';
 import * as aws from '@pulumi/aws';
 import * as k8s from '@pulumi/kubernetes';
-import * as fs from 'fs';
-import * as path from 'path';
-import { createNamespace, createServiceAccount } from '../utils';
+import { createNamespace,  getSecrets } from '../utils';
 
 
 
@@ -16,19 +13,34 @@ export const dopplerOperator = (
     // create the argocd namespace
     const dopplerOperatorNamespace = createNamespace("doppler-operator-system", provider);
 
-    // apply the secret for doppler to authenticate
-    const dopplerOperatorSecret = new k8s.core.v1.Secret("doppler-token-secret", {
-        data: {
-            serviceToken: process.env.DOPPLER_SERVICE_TOKEN!
-        },
-        metadata: {
-            name: "doppler-token-secret",
-            namespace: dopplerOperatorNamespace.metadata.name
-        },
-        type: "generic",
+    // Get the secrets to create
+    const dopplerSecrets = getSecrets();
 
-    }, {
-        provider: provider
+    // Loop through all of the DOPPLER_TOKEN secrets
+    // and create a kubernetes secret for each of them
+    dopplerSecrets.forEach( (secret) => {
+
+        const project = secret.project.toLowerCase()
+        const env = secret.env.toLowerCase()
+        const secret_name = project + "-" + env + "-doppler-token-secret";
+
+        console.log("SECRET")
+        console.log(secret.token)
+
+        // apply the secret for doppler to authenticate
+        const dopplerOperatorSecret = new k8s.core.v1.Secret(secret_name, {
+            data: {
+                serviceToken: btoa(secret.token!)
+            },
+            metadata: {
+                name: secret_name,
+                namespace: dopplerOperatorNamespace.metadata.name
+            },
+            type: "generic",
+
+        }, {
+            provider: provider
+        });
     });
 
     // apply the helm chart

@@ -74,3 +74,21 @@ export const createNamespace = (namespace: string, provider: k8s.Provider) =>
     }, {
         provider,
     });
+
+// Function to retrieve service tokens from doppler
+export const getSecrets = () => {
+    var secrets = []
+    for(const key in process.env) {
+        if (key.endsWith("DOPPLER_TOKEN")) {
+            const doppler_project = key.split("_")[0];
+            const doppler_env = key.split("_")[1];
+
+            secrets.push({
+                project: doppler_project,
+                env: doppler_env,
+                token: process.env[key]
+            });
+        }
+    }
+    return secrets
+}

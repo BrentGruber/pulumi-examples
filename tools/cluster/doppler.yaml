@@ -1,3 +1,3 @@
 setup:
     project: infrastructure
-    config: dev
+    config: dev_cluster
