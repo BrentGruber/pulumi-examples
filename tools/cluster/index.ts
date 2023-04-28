@@ -1,8 +1,10 @@
 import * as pulumi from "@pulumi/pulumi";
+import * as aws from "@pulumi/aws";
 import * as k8s from "@pulumi/kubernetes";
 import { cluster } from "./infrastructure/cluster";
 import { vpc } from "./infrastructure/vpc";
 import { albController } from "./helm-charts/alb-controller/alb-controller";
+import { certManager } from "./helm-charts/cert-manager/cert-manager";
 import { ingress } from "./helm-charts/ingress-nginx/ingress";
 import { externalDns } from "./helm-charts/external-dns/external-dns";
 import { dopplerOperator } from "./helm-charts/doppler-operator/doppler-operator";
@@ -19,6 +21,12 @@ const eksNodeInstanceType = config.get("eksNodeInstanceType") || "t3.medium";
 const projectName = config.get("projectName") || "bomdemo-tools-eks";
 const vpcNetworkCidr = config.get("vpcNetworkCidr") || "10.0.0.0/16";
 const domain = config.get("domain") || "bomdemo.com";
+
+// Get the hosted zone
+const zone =aws.route53.getZoneOutput({
+    name: domain
+});
+
 
 const clusterVPC = vpc(vpcNetworkCidr, projectName);
 const clusterEKS = cluster(projectName, clusterVPC.vpcId, eksVersion, clusterVPC.publicSubnetIds, 
@@ -68,3 +76,11 @@ export const { dopplerOperatorNamespace } = dopplerOperator(
     clusterOidcProvider,
     provider
 );
+
+
+// deploy cert-manager
+export const { certManagerNamespace, certManagerPolicy, certManagerServiceAccount } = certManager(
+    clusterOidcProvider,
+    provider,
+    zone.zoneId
+)
