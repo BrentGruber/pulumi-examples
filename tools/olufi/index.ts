@@ -70,3 +70,4 @@ const server = new aws.ec2.Instance("olufi-server", {
 
 export const publicIp = server.publicIp;
 export const publicHostName = server.publicDns;
+export const olufiRoleArn = olufiRole.arn;

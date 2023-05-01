@@ -27,11 +27,15 @@ const zone =aws.route53.getZoneOutput({
     name: domain
 });
 
+// Olufi stackref, get role to map to eks cluster
+const stackRef = new pulumi.StackReference(`BOM-DEMO/olufi/dev`);
+const adminRole = stackRef.getOutput("olufiRoleArn");
+
 
 const clusterVPC = vpc(vpcNetworkCidr, projectName);
 const clusterEKS = cluster(projectName, clusterVPC.vpcId, eksVersion, clusterVPC.publicSubnetIds, 
     clusterVPC.privateSubnetIds, eksNodeInstanceType, desiredClusterSize, 
-    minClusterSize, maxClusterSize);
+    minClusterSize, maxClusterSize, adminRole);
 
 // Export the kubeconfig for use
 export const kubeconfig = clusterEKS.kubeconfig;

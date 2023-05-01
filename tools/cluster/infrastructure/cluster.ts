@@ -4,11 +4,9 @@ import * as awsx from "@pulumi/awsx";
 import * as eks from "@pulumi/eks";
 
 
-
-
 export const cluster = (projectName: string, vpcId: pulumi.Output<string>, version: string, vpcPublicSubnetIds: pulumi.Output<string[]>, 
     vpcPrivateSubnetIds: pulumi.Output<string[]>, eksNodeInstanceType: string, desiredClusterSize: number, 
-    minClusterSize: number, maxClusterSize: number) => {
+    minClusterSize: number, maxClusterSize: number, adminRole: pulumi.Output<any>) => {
 
     // create the clustername
     const clusterName = projectName;
@@ -35,6 +33,20 @@ export const cluster = (projectName: string, vpcId: pulumi.Output<string>, versi
         // endpointPrivateAccess: true,
         // endpointPublicAccess: false
         createOidcProvider: true,
+        // Define roleMappings to allow different roles access to the cluster
+        // THis is needed so that both Olufi and users can use kubectl
+        roleMappings: [
+            {
+                groups: ["system:masters"],
+                username: "admin",
+                roleArn: adminRole
+            },
+            {
+                groups: ["system:masters"],
+                username: "admin",
+                roleArn: "arn:aws:iam::593393184947:role/l1-developers"
+            }
+        ]
     });
 };
 
