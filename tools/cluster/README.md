@@ -81,3 +81,4 @@ Pulumi will stand up a vpc with public and private subnets, and then also build 
 #### Doppler
 
 Doppler is a secrets management SaaS, in this case we are using it to store any authentication tokens used for installing the software on the olufi instance.  e.g. GITHUB_PAT_TOKEN for the actions runner to authenticate with the BOM-DEMO github organization when registering the runner
+
