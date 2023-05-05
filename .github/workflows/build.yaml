@@ -9,7 +9,10 @@ on:
         branches: [main]
         paths:
             - 'tools/cluster/*'
-    
+
+# Doppler cli expects $HOME defined to store config file
+env:
+  HOME: ./temp_home
 
 jobs:
     build:
