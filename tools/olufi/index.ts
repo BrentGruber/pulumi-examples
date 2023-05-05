@@ -54,7 +54,7 @@ const machineProfile = new aws.iam.InstanceProfile("olufi-profile", {role: olufi
 
 // replace environment variables in script
 var startupScript = fs.readFileSync('files/init.sh', 'utf-8');
-startupScript = startupScript.replace("${GITHUB_PAT}", process.env.GITHUB_PAT!)
+// startupScript = startupScript.replace("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", process.env.GITHUB_PAT!)
 
 
 
@@ -65,7 +65,7 @@ const server = new aws.ec2.Instance("olufi-server", {
     vpcSecurityGroupIds: [ group.id ], // reference the group object above
     ami: ami,
     iamInstanceProfile: machineProfile.name,
-    userData: startupScript
+    //userData: startupScript
 });
 
 export const publicIp = server.publicIp;
