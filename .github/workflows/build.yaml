@@ -4,11 +4,11 @@ on:
     pull_request:
         branches: [main]
         paths:
-            - 'tools/cluster/*'
+            - 'tools/cluster/**'
     push:
         branches: [main]
         paths:
-            - 'tools/cluster/*'
+            - 'tools/cluster/**'
 
 # Doppler cli expects $HOME defined to store config file
 env:
