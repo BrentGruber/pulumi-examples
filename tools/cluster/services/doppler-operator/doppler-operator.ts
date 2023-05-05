@@ -24,13 +24,10 @@ export const dopplerOperator = (
         const env = secret.env.toLowerCase()
         const secret_name = project + "-" + env + "-doppler-token-secret";
 
-        console.log("SECRET")
-        console.log(secret.token)
-
         // apply the secret for doppler to authenticate
         const dopplerOperatorSecret = new k8s.core.v1.Secret(secret_name, {
             data: {
-                serviceToken: btoa(secret.token!)
+                serviceToken: Buffer.from(secret.token!).toString('base64')
             },
             metadata: {
                 name: secret_name,
