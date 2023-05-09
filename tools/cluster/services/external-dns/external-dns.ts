@@ -11,9 +11,10 @@ export const externalDns = (
     provider: k8s.Provider
 ) => {
 
+    const namespaceName = "external-dns"
     
     // Create the namespace
-    const externalDnsNamespace = createNamespace("external-dns", provider);
+    const externalDnsNamespace = createNamespace(namespaceName, provider);
 
 
     // Create the iam policy
@@ -28,7 +29,7 @@ export const externalDns = (
     // Create the service account
     const externalDnsServiceAccount = createServiceAccount(
         "external-dns",
-        externalDnsNamespace,
+        namespaceName,
         clusterOidcProvider,
         provider,
         externalDnsPolicy.arn

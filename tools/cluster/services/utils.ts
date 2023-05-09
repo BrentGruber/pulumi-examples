@@ -5,7 +5,7 @@ import * as pulumi from "@pulumi/pulumi";
 // Function to create a service account
 export const createServiceAccount = (
     name: string,
-    namespace: k8s.core.v1.Namespace,
+    namespace: string,
     clusterOidcProvider: aws.iam.OpenIdConnectProvider,
     provider: k8s.Provider,
     policyArn: pulumi.Output<string>
@@ -16,7 +16,7 @@ export const createServiceAccount = (
     const saAssumeRolePolicy = pulumi.all([
         clusterOidcProvider.url,
         clusterOidcProvider.arn,
-        namespace.metadata.name,
+        namespace,
     ]).apply(([url, arn, namespace]) =>
         aws.iam.getPolicyDocument({
             statements: [
@@ -55,7 +55,7 @@ export const createServiceAccount = (
     // Create and return the service account with proper annotations
     return new k8s.core.v1.ServiceAccount(name, {
             metadata: {
-                namespace: namespace.metadata.name,
+                namespace: namespace,
                 name,
                 annotations: {
                     "eks.amazonaws.com/role-arn": saRole.arn,

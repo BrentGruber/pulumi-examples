@@ -14,8 +14,10 @@ export const albController = (
     vpcId: pulumi.Output<string>,
 ) => {
 
+    var namespaceName = "alb-controller"
+
     // create the alb controller namespace
-    const albControllerNamespace = createNamespace("alb-controller", provider);
+    const albControllerNamespace = createNamespace(namespaceName, provider);
 
     // create the necessary iam policy
     const albControllerPolicy = new aws.iam.Policy('alb-controller', {
@@ -25,7 +27,7 @@ export const albController = (
     // create the service account
     const albControllerServiceAccount = createServiceAccount(
         'alb-controller',
-        albControllerNamespace,
+        namespaceName,
         clusterOidcProvider,
         provider,
         albControllerPolicy.arn

@@ -9,7 +9,9 @@ export const certManager = (
     provider: k8s.Provider,
     zoneId: pulumi.Output<string>
   ) => {
-    const certManagerNamespace = createNamespace('cert-manager', provider);
+    const namespaceName = "cert-manager"
+
+    const certManagerNamespace = createNamespace(namespaceName, provider);
   
     // cert manager needs access to route53 records
     const certManagerPolicy = new aws.iam.Policy('cert-manager', {
@@ -41,7 +43,7 @@ export const certManager = (
   
     const certManagerServiceAccount = createServiceAccount(
       'cert-manager',
-      certManagerNamespace,
+      namespaceName,
       clusterOidcProvider,
       provider,
       certManagerPolicy.arn
