@@ -8,6 +8,7 @@ import { certManager } from "./services/cert-manager/cert-manager";
 import { ingress } from "./services/ingress-nginx/ingress";
 import { externalDns } from "./services/external-dns/external-dns";
 import { dopplerOperator } from "./services/doppler-operator/doppler-operator";
+import { mimir } from "./services/mimir/mimir"
 
 
 // Grab some values from the Pulumi configuration (or use default values)
@@ -88,3 +89,19 @@ export const { certManagerNamespace, certManagerPolicy, certManagerServiceAccoun
     provider,
     zone.zoneId
 )
+
+
+// Deploy Monitoring tools
+// TODO: How to tie this in with tools-deploy
+const monitoringNamespace = "monitoring"
+
+// deploy mimir
+const bucketName: string = "mimir-bomdemo-" + environment
+export const { mimirPolicy, mimirServiceAccount, mimirBucket } = mimir(
+    clusterOidcProvider,
+    provider,
+    bucketName,
+    monitoringNamespace
+)
+
+
