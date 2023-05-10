@@ -22,20 +22,15 @@ export const mimir = (
     
     // Create the iam policy
     const mimirPolicy = new aws.iam.Policy('mimir', {
-        description: "Mimir policy",
-        policy: JSON.stringify({
-            Version: "2012-10-17",
+        description: 'Mimir policy',
+        policy: mimirBucket.arn.apply(arn => JSON.stringify({
+            Version: '2012-10-17',
             Statement: [{
-                Effect: "Allow",
-                Principal: "*",
-                Action: [
-                    "s3:*"
-                ],
-                Resource: [
-                    `${mimirBucket.arn}`
-                ]
+                Effect: 'Allow',
+                Action: "s3:*",
+                Resource: `${arn}`
             }]
-        })
+        }))
     });
 
     // Create the service account

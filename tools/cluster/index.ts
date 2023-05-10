@@ -2,6 +2,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as aws from "@pulumi/aws";
 import * as k8s from "@pulumi/kubernetes";
 import { cluster } from "./infrastructure/cluster";
+import { csiDriver } from "./services/csi-driver/csi-driver";
 import { vpc } from "./infrastructure/vpc";
 import { albController } from "./services/alb-controller/alb-controller";
 import { certManager } from "./services/cert-manager/cert-manager";
@@ -53,6 +54,12 @@ const provider = new k8s.Provider('k8s', {
 });
 
 
+// csi-driver
+export const { csiDriverPolicy, csiDriverServiceAccount } = csiDriver(
+    clusterOidcProvider,
+    provider
+)
+
 // deploy the alb controller chart
 export const { albControllerNamespace, albControllerPolicy, albControllerServiceAccount } = albController(
     clusterOidcProvider,
@@ -103,5 +110,4 @@ export const { mimirPolicy, mimirServiceAccount, mimirBucket } = mimir(
     bucketName,
     monitoringNamespace
 )
-
 

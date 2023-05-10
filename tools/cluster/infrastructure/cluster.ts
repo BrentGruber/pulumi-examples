@@ -33,6 +33,8 @@ export const cluster = (projectName: string, vpcId: pulumi.Output<string>, versi
         // endpointPrivateAccess: true,
         // endpointPublicAccess: false
         createOidcProvider: true,
+        // Define storage classes for persistent volume claims
+        storageClasses: "gp2",
         // Define roleMappings to allow different roles access to the cluster
         // THis is needed so that both Olufi and users can use kubectl
         roleMappings: [
