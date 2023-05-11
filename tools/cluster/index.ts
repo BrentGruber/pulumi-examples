@@ -103,11 +103,18 @@ export const { certManagerNamespace, certManagerPolicy, certManagerServiceAccoun
 const monitoringNamespace = "monitoring"
 
 // deploy mimir
-const bucketName: string = "mimir-bomdemo-" + environment
+const mimirBucketName: string = "mimir-bomdemo-" + environment
 export const { mimirPolicy, mimirServiceAccount, mimirBucket } = mimir(
     clusterOidcProvider,
     provider,
-    bucketName,
+    mimirBucketName,
     monitoringNamespace
 )
 
+const lokiBucketName: string = "loki-bomdemo-" + environment
+export const { lokiPolicy, lokiServiceAccount, lokiBucket } = mimir(
+    clusterOidcProvider,
+    provider,
+    lokiBucketName,
+    monitoringNamespace
+)
