@@ -16,7 +16,7 @@ export const certManager = (
     // cert manager needs access to route53 records
     const certManagerPolicy = new aws.iam.Policy('cert-manager', {
       description: 'Cert manager policy',
-      policy: JSON.stringify({
+      policy: zoneId.apply(zId => JSON.stringify({
         Version: '2012-10-17',
         Statement: [
           {
@@ -30,7 +30,7 @@ export const certManager = (
               'route53:ChangeResourceRecordSets',
               'route53:ListResourceRecordSets',
             ],
-            Resource: `arn:aws:route53:::hostedzone/${zoneId}`,
+            Resource: `arn:aws:route53:::hostedzone/${zId}`,
           },
           {
             Effect: 'Allow',
@@ -38,7 +38,7 @@ export const certManager = (
             Resource: '*',
           },
         ],
-      }),
+      })),
     });
   
     const certManagerServiceAccount = createServiceAccount(

@@ -9,7 +9,8 @@ import { certManager } from "./services/cert-manager/cert-manager";
 import { ingress } from "./services/ingress-nginx/ingress";
 import { externalDns } from "./services/external-dns/external-dns";
 import { dopplerOperator } from "./services/doppler-operator/doppler-operator";
-import { mimir } from "./services/mimir/mimir"
+import { mimir } from "./services/mimir/mimir";
+import { loki } from "./services/loki/loki";
 
 
 // Grab some values from the Pulumi configuration (or use default values)
@@ -112,7 +113,7 @@ export const { mimirPolicy, mimirServiceAccount, mimirBucket } = mimir(
 )
 
 const lokiBucketName: string = "loki-bomdemo-" + environment
-export const { lokiPolicy, lokiServiceAccount, lokiBucket } = mimir(
+export const { lokiPolicy, lokiServiceAccount, lokiBucket } = loki(
     clusterOidcProvider,
     provider,
     lokiBucketName,

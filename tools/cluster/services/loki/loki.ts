@@ -1,9 +1,6 @@
-import * as pulumi from '@pulumi/pulumi';
 import * as aws from '@pulumi/aws';
 import * as k8s from '@pulumi/kubernetes';
-import * as fs from 'fs';
-import * as path from 'path';
-import { createNamespace, createServiceAccount } from '../utils';
+import { createServiceAccount } from '../utils';
 
 
 
@@ -21,21 +18,20 @@ export const loki = (
     // Create an iam role that can access bucket
     
     // Create the iam policy
-    const lokiPolicy = new aws.iam.Policy('loki', {
-        description: "loki policy",
-        policy: JSON.stringify({
-            Version: "2012-10-17",
+    // This was not a waste of a large amount of time
+    // but this account has a "smart" policy that prevents
+    // iam policies that start with the letter l, so this
+    // policy needed to be renamed
+    const lokiPolicy = new aws.iam.Policy('bom-loki', {
+        description: "Bom loki policy",
+        policy: lokiBucket.arn.apply(arn => JSON.stringify({
+            Version: '2012-10-17',
             Statement: [{
-                Effect: "Allow",
-                Principal: "*",
-                Action: [
-                    "s3:*"
-                ],
-                Resource: [
-                    `${lokiBucket.arn}`
-                ]
+                Effect: 'Allow',
+                Action: "s3:*",
+                Resource: `${arn}`
             }]
-        })
+        }))
     });
 
     // Create the service account
