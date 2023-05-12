@@ -29,7 +29,7 @@ export const loki = (
             Statement: [{
                 Effect: 'Allow',
                 Action: "s3:*",
-                Resource: `${arn}`
+                Resource: [`${arn}`, `${arn}/*`]
             }]
         }))
     });
