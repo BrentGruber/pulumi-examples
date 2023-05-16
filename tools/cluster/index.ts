@@ -11,6 +11,7 @@ import { externalDns } from "./services/external-dns/external-dns";
 import { dopplerOperator } from "./services/doppler-operator/doppler-operator";
 import { mimir } from "./services/mimir/mimir";
 import { loki } from "./services/loki/loki";
+import { tempo } from "./services/tempo/tempo"
 
 
 // Grab some values from the Pulumi configuration (or use default values)
@@ -112,10 +113,20 @@ export const { mimirPolicy, mimirServiceAccount, mimirBucket } = mimir(
     monitoringNamespace
 )
 
+// deploy loki
 const lokiBucketName: string = "loki-bomdemo-" + environment
 export const { lokiPolicy, lokiServiceAccount, lokiBucket } = loki(
     clusterOidcProvider,
     provider,
     lokiBucketName,
+    monitoringNamespace
+)
+
+// deploy tempo
+const tempoBucketName: string = "tempo-bomdemo-" + environment
+export const { tempoPolicy, tempoServiceAccount, tempoBucket } = tempo(
+    clusterOidcProvider,
+    provider,
+    tempoBucketName,
     monitoringNamespace
 )
