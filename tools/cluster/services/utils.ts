@@ -8,7 +8,7 @@ export const createServiceAccount = (
     namespace: string,
     clusterOidcProvider: aws.iam.OpenIdConnectProvider,
     provider: k8s.Provider,
-    policyArn: pulumi.Output<string>
+    policyArn: pulumi.Output<string> | string
 ) => {
 
     // Create the assume role policy so that the service account

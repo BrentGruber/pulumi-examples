@@ -6,6 +6,7 @@ import { csiDriver } from "./services/csi-driver/csi-driver";
 import { vpc } from "./infrastructure/vpc";
 import { albController } from "./services/alb-controller/alb-controller";
 import { certManager } from "./services/cert-manager/cert-manager";
+import { cilium } from "./services/cilium/cilium"
 import { ingress } from "./services/ingress-nginx/ingress";
 import { externalDns } from "./services/external-dns/external-dns";
 import { dopplerOperator } from "./services/doppler-operator/doppler-operator";
@@ -25,6 +26,7 @@ const eksNodeInstanceType = config.get("eksNodeInstanceType") || "t3.xlarge";
 const projectName = config.get("projectName") || "bomdemo-tools-eks";
 const vpcNetworkCidr = config.get("vpcNetworkCidr") || "10.0.0.0/16";
 const domain = config.get("domain") || "bomdemo.com";
+const ciliumEnabled = true
 
 // Get the hosted zone
 const zone =aws.route53.getZoneOutput({
@@ -39,7 +41,7 @@ const adminRole = stackRef.getOutput("olufiRoleArn");
 const clusterVPC = vpc(vpcNetworkCidr, projectName);
 const clusterEKS = cluster(projectName, clusterVPC.vpcId, eksVersion, clusterVPC.publicSubnetIds, 
     clusterVPC.privateSubnetIds, eksNodeInstanceType, desiredClusterSize, 
-    minClusterSize, maxClusterSize, adminRole);
+    minClusterSize, maxClusterSize, adminRole, ciliumEnabled);
 
 // Export the kubeconfig for use
 export const kubeconfig = clusterEKS.kubeconfig;
@@ -54,6 +56,15 @@ if (!clusterOidcProvider) {
 const provider = new k8s.Provider('k8s', {
     kubeconfig: kubeconfig.apply(JSON.stringify),
 });
+
+
+if (ciliumEnabled) {
+    //cilium
+    const { ciliumNamespace, ciliumServiceAccount } = cilium(
+        clusterOidcProvider,
+        provider,
+    )
+}
 
 
 // csi-driver
