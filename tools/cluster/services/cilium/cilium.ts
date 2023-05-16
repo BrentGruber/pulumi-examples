@@ -6,7 +6,7 @@ export const cilium = (
     clusterOidcProvider: aws.iam.OpenIdConnectProvider,
     provider: k8s.Provider
 ) => {
-    const namespaceName = "kube-system"
+    const namespaceName = "cilium"
 
     // create the alb controller namespace
     const ciliumNamespace = createNamespace(namespaceName, provider);
