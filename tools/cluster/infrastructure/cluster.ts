@@ -59,7 +59,7 @@ export const cluster = (projectName: string, vpcId: pulumi.Output<string>, versi
             taints: [{
                     key: "node.cilium.io/agent-not-ready",
                     value: "true",
-                    effect: "NoExecute",
+                    effect: "NO_EXECUTE",
                 }],
         });
     }
