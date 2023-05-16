@@ -56,6 +56,12 @@ export const cluster = (projectName: string, vpcId: pulumi.Output<string>, versi
         const managedNodeGroup = new eks.ManagedNodeGroup("ciliumNodeGroup", {
             cluster: eksCluster,
             nodeRole: eksCluster.instanceRoles[0],
+            instanceTypes: [eksNodeInstanceType],
+            scalingConfig: {
+                desiredSize: desiredClusterSize,
+                minSize: minClusterSize,
+                maxSize: maxClusterSize
+            },
             taints: [{
                     key: "node.cilium.io/agent-not-ready",
                     value: "true",
