@@ -55,6 +55,7 @@ export const cluster = (projectName: string, vpcId: pulumi.Output<string>, versi
     if (ciliumEni) {
         const managedNodeGroup = new eks.ManagedNodeGroup("ciliumNodeGroup", {
             cluster: eksCluster,
+            nodeRole: eksCluster.instanceRoles[0],
             taints: [{
                     key: "node.cilium.io/agent-not-ready",
                     value: "true",
