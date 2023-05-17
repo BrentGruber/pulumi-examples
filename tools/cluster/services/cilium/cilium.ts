@@ -6,10 +6,7 @@ export const cilium = (
     clusterOidcProvider: aws.iam.OpenIdConnectProvider,
     provider: k8s.Provider
 ) => {
-    const namespaceName = "cilium"
-
-    // create the alb controller namespace
-    const ciliumNamespace = createNamespace(namespaceName, provider);
+    const namespaceName = "kube-system"
 
     // create the service account
     const ciliumServiceAccount = createServiceAccount(
@@ -21,7 +18,6 @@ export const cilium = (
     );
 
     return {
-        ciliumNamespace,
         ciliumServiceAccount
     }
 }

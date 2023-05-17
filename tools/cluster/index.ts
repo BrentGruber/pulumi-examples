@@ -60,7 +60,7 @@ const provider = new k8s.Provider('k8s', {
 
 if (ciliumEnabled) {
     //cilium
-    const { ciliumNamespace, ciliumServiceAccount } = cilium(
+    const { ciliumServiceAccount } = cilium(
         clusterOidcProvider,
         provider,
     )
