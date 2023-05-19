@@ -18,6 +18,10 @@ export const cluster = (projectName: string, vpcId: pulumi.Output<string>, versi
         vpcId: vpcId,
         // TODO: Pull this out to the configs
         version: version,
+        // Public subnets will be used for load balancers
+        publicSubnetIds: vpcPublicSubnetIds,
+        // Private subnets will be used for cluster nodes
+        privateSubnetIds: vpcPrivateSubnetIds,
         // Uncomment the next two lines for a private cluster (VPN access required)
         // endpointPrivateAccess: true,
         // endpointPublicAccess: false
