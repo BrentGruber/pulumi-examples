@@ -22,6 +22,15 @@ export const cluster = (projectName: string, vpcId: pulumi.Output<string>, versi
         publicSubnetIds: vpcPublicSubnetIds,
         // Private subnets will be used for cluster nodes
         privateSubnetIds: vpcPrivateSubnetIds,
+        // Change configuration values to change any of the following settings
+        instanceType: eksNodeInstanceType,
+        desiredCapacity: desiredClusterSize,
+        minSize: minClusterSize,
+        maxSize: maxClusterSize,
+        // skip default node group
+        skipDefaultNodeGroup: true,
+        // Do not give the worker nodes public IP addresses
+        nodeAssociatePublicIpAddress: false,
         // Uncomment the next two lines for a private cluster (VPN access required)
         // endpointPrivateAccess: true,
         // endpointPublicAccess: false
