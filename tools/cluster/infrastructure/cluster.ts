@@ -18,17 +18,6 @@ export const cluster = (projectName: string, vpcId: pulumi.Output<string>, versi
         vpcId: vpcId,
         // TODO: Pull this out to the configs
         version: version,
-        // Public subnets will be used for load balancers
-        publicSubnetIds: vpcPublicSubnetIds,
-        // Private subnets will be used for cluster nodes
-        privateSubnetIds: vpcPrivateSubnetIds,
-        // Change configuration values to change any of the following settings
-        instanceType: eksNodeInstanceType,
-        desiredCapacity: desiredClusterSize,
-        minSize: minClusterSize,
-        maxSize: maxClusterSize,
-        // Do not give the worker nodes public IP addresses
-        nodeAssociatePublicIpAddress: false,
         // Uncomment the next two lines for a private cluster (VPN access required)
         // endpointPrivateAccess: true,
         // endpointPublicAccess: false
